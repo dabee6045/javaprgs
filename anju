@@ -1,0 +1,469 @@
+#bellmanford
+import java.util.Scanner;
+
+public class BellmanFord
+{
+	private int D[];
+	private int num_ver;
+	public static final int MAX_VALUE = 999;
+	
+	public BellmanFord(int num_ver)
+	{
+		this.num_ver = num_ver;
+		D = new int[num_ver + 1];
+	}
+	
+	public void BellmanFordEvaluation(int source, int A[][])
+	{
+		for (int node = 1; node <= num_ver; node++)
+		{
+			D[node] = MAX_VALUE;
+
+		}
+		D[source] = 0;
+		for (int node = 1; node <= num_ver - 1; node++)
+		{
+			for (int sn = 1; sn <= num_ver; sn++)
+			{
+				for (int dn = 1; dn <= num_ver; dn++)
+				{
+					if (A[sn][dn] != MAX_VALUE)
+					{
+						if (D[dn] > D[sn]+ A[sn][dn])
+							D[dn] = D[sn] + A[sn][dn];
+
+					}
+				}
+			}
+		}
+		for (int sn = 1; sn <= num_ver; sn++)
+		{
+			for (int dn = 1; dn <= num_ver; dn++)
+			{
+				if (A[sn][dn] != MAX_VALUE)
+				{
+					if (D[dn] > D[sn]+ A[sn][dn])
+						System.out.println("The Graph contains negative egde cycle");
+						
+				}
+			}
+		}
+		System.exit(1);
+		for (int vertex = 1; vertex <= num_ver; vertex++)
+		{
+			System.out.println("distance of source " + source + " to "+ vertex + " is " + D[vertex]);
+		}
+	
+	}
+		
+	public static void main(String[ ] args)
+	{
+		int num_ver = 0;
+		int source;
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter the number of vertices");
+		num_ver = scanner.nextInt();
+		int A[][] = new int[num_ver + 1][num_ver + 1];
+		System.out.println("Enter the adjacency matrix");
+		for (int sn = 1; sn <= num_ver; sn++)
+		{
+			for (int dn = 1; dn <= num_ver; dn++)
+			{
+				A[sn][dn] = scanner.nextInt();
+				if (sn == dn)
+				{
+					A[sn][dn] = 0;
+					continue;
+				}
+				if (A[sn][dn] == 0)
+				{
+					A[sn][dn] = MAX_VALUE;
+				}
+			}
+		}
+		System.out.println("Enter the source vertex");
+		source = scanner.nextInt();
+		BellmanFord b = new BellmanFord (num_ver);
+		b.BellmanFordEvaluation(source, A);
+		scanner.close();
+	}
+}
+
+
+
+#leakybucket
+import java.util.*;
+public class leakybucket {
+	public static void main(String[] args)
+	{
+		int outr=50, buffer=300;
+		int inr;
+		double store;
+		int overflow=0,rem=0;
+		while(true)
+		{
+			System.out.println("Enter input rate: ");
+			Scanner sc=new Scanner(System.in);
+			inr=sc.nextInt();
+			
+			if(inr>buffer)
+			{
+				
+				overflow=inr-buffer;
+				store=inr+rem;
+				rem=inr-outr-overflow;
+				
+				
+			}
+			else if (inr+rem>buffer)
+			{
+				
+				overflow=inr+rem-buffer;
+				store=inr+rem;
+				rem=(inr+rem)-outr-overflow;
+				
+			}
+			else
+			{
+				overflow=0;
+				store=inr+rem;
+				rem=inr+rem-outr;
+			
+			}
+			System.out.println("inr :"+inr+"  "+"store :"+store+"  "+"overflow :"+overflow+"  "+"rem :"+rem+" ");
+			
+		}
+	}
+}
+
+
+#rsa
+import java.util.*;
+import java.io.*;
+public class rsa
+{
+	static int gcd(int m,int n)
+	{
+		while(n!=0)
+		{
+			int r=m%n;
+			m=n;
+			n=r;
+		}
+	return m;
+	}
+	public static void main(String args[])
+	{
+		int p=0,q=0,n=0,e=0,d=0,phi=0;
+		int nummes[]=new int[100];
+		int encrypted[]=new int[100];
+		int decrypted[]=new int[100];
+		int i=0,j=0,nofelem=0;
+		String message ;
+		
+		Scanner sc=new Scanner(System.in);
+		
+		System.out.println("Enter the Message tobe encrypted :");
+		message = sc.nextLine();
+		System.out.println("\nEnter value of p and q : ");
+		p=sc.nextInt();
+		q=sc.nextInt();
+		
+		n=p*q;	
+		phi=(p-1)*(q-1);
+		
+		for(i=2;i<phi;i++)
+		{
+			if(gcd(i,phi)==1) 
+				break;
+		}	
+		
+		e=i;
+		for(i=2;i<phi;i++)
+		{
+			if((e*i-1)%phi==0)
+				break;
+		}	
+		
+		d=i;
+		for(i=0;i<message.length();i++)	
+		{
+			char c = message.charAt(i);
+			int a =(int)c;
+			nummes[i]=a-96;
+		}
+		nofelem=message.length();
+		for(i=0;i<nofelem;i++)
+		{
+			encrypted[i]=1;
+			for(j=0;j<e;j++)
+				encrypted[i] =(encrypted[i]*nummes[i])%n;
+		}
+		System.out.println("\nEncrypted message : ");
+		for(i=0;i<nofelem;i++)
+		{
+			System.out.print(encrypted[i]);		
+		}
+		for(i=0;i<nofelem;i++)
+		{
+			System.out.print((char)(encrypted[i]+96));
+		}
+		for(i=0;i<nofelem;i++)
+		{
+			decrypted[i]=1;
+			for(j=0;j<d;j++)
+				decrypted[i]=(decrypted[i]*encrypted[i])%n;
+		}
+		System.out.println("\n\nDecrypted message : ");
+		for(i=0;i<nofelem;i++)
+		{
+			System.out.print((char)(decrypted[i]+96));
+		}
+		System.out.println();
+		return;
+	}
+}
+
+
+#tcp
+import java.net.*;
+import java.io.*;
+import java.io.FileWriter;
+import java.util.Scanner;
+
+public class Client 
+{
+	public static void main(String args[]) throws Exception
+	{
+		int Entry = 1;
+		Scanner Read = new Scanner(System.in);
+		System.out.println("Enter Server Address: ");
+		String address = Read.nextLine();	
+		while (Entry == 1)
+		{
+			Socket sock = new Socket(address, 5119);
+			System.out.print("Client /> ");
+			String Command = Read.nextLine();
+			if (Command.equals("exit"))
+			{
+				Entry = 0;
+				break;
+			}
+			OutputStream ostream = sock.getOutputStream();
+			PrintWriter pwrite = new PrintWriter(ostream, true);
+			pwrite.println(Command);
+
+			InputStream istream = sock.getInputStream();
+			BufferedReader socketRead = new BufferedReader(new
+			InputStreamReader(istream));
+			String FileContent="";
+			String Temp;
+
+			while ((Temp = socketRead.readLine()) != null)
+			{
+				pwrite.println(Temp);
+				FileContent+=Temp;
+			}
+			System.out.println("File : "+Command+" Received.");
+			FileWriter Writer = new FileWriter("Client"+Command);
+			Writer.write(FileContent);
+			Writer.close();
+			pwrite.close();
+			socketRead.close();	
+			sock.close();
+		
+		}
+		Read.close();
+	}
+}
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Server
+{
+	public static void main(String args[]) throws Exception
+	{
+		int data = 1;
+		ServerSocket sersock = new ServerSocket(5119);
+		while(data == 1)
+		{
+			System.out.println("Server ready for connection....");
+			Socket sock = sersock.accept();
+			System.out.println("Connection Established\nwating for Client Request.");
+			InputStream istream = sock.getInputStream( );
+			BufferedReader br =new BufferedReader(new InputStreamReader(istream));
+			String fname = br.readLine();
+			if(fname.equals("exit"))
+			{
+				 continue;
+			}
+			BufferedReader contentRead = new BufferedReader(new FileReader(fname));
+			OutputStream ostream = sock.getOutputStream( );
+			PrintWriter pwrite = new PrintWriter(ostream, true);
+			String str;
+			while((str = contentRead.readLine()) != null)
+			{
+				pwrite.println(str);
+			}
+			System.out.println("\nFile Contents sent successfully\n\n");
+			pwrite.close();
+			br.close(); 
+			contentRead.close();
+			sock.close();
+		}
+		sersock.close();
+	}
+}
+
+
+#udp
+import java.io.*;
+import java.net.*;
+class UDPServer
+{
+	public static DatagramSocket serversocket;
+	public static DatagramPacket dp;
+	public static BufferedReader br;
+	public static InetAddress ia;
+	public static byte buf[] = new byte[1024];
+	public static int cport = 3000,sport=8000;
+	public static void main(String[] args) throws IOException
+       {
+         serversocket = new DatagramSocket(sport);
+         dp = new DatagramPacket(buf,buf.length);
+         br = new BufferedReader (new InputStreamReader(System.in));
+         ia = InetAddress.getLocalHost();
+ 
+         System.out.println("Server is Running...");
+         while(true)
+         {
+          serversocket.receive(dp);
+          String str2 = new String(dp.getData(), 0, dp.getLength());
+          if(str2.equals("exit"))
+          {
+           System.out.println("Terminated...");
+           break;
+          }
+          System.out.println("Client said : " + str2);
+ 
+          String str3 = new String(br.readLine());
+          buf = str3.getBytes();
+          serversocket.send(new DatagramPacket(buf,str3.length(), ia, cport));
+         }
+       }
+    }
+    
+    import java.io.*;
+import java.net.*;
+class UDPClient
+{
+	public static DatagramSocket clientsocket;
+	public static DatagramPacket dp;
+	public static BufferedReader br;
+	public static InetAddress ia;
+	public static byte buf[] = new byte[1024];
+	public static int cport = 3000, sport = 8000;
+	public static void main(String[] args) throws IOException
+	{
+		clientsocket = new DatagramSocket(cport);
+		dp = new DatagramPacket(buf, buf.length);
+		br = new BufferedReader(new InputStreamReader(System.in));
+		ia = InetAddress.getLocalHost();
+		  
+		System.out.println("Client is Running...");
+		System.out.println("Type some text if u want to Quit type 'exit'.");
+		while(true)
+		{
+			String str1 = new String(br.readLine());
+			buf = str1.getBytes();
+			if(str1.equals("exit"))
+			{
+				System.out.println("Terminated..");
+				clientsocket.send(new DatagramPacket(buf,str1.length(),ia,sport));
+				break;
+			}
+			clientsocket.send(new DatagramPacket(buf,str1.length(), ia, sport));
+			 
+			clientsocket.receive(dp);
+			String str4 = new String(dp.getData(), 0, dp.getLength());
+			System.out.println("Server said : " + str4);
+		}
+	}
+}
+
+#crc
+import java.util.*;
+class crc
+{
+    void div(int a[],int k)
+    {
+        int gp[]={1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1}; 
+        int count=0;
+        for(int i=0;i<k;i++)
+        {
+            if(a[i]==gp[0])
+            {
+               for(int j=i;j<17+i;j++)
+               {
+            	   a[j]=a[j]^gp[count++]; 
+               }
+               count=0;
+            }
+        }
+    }
+ public static void main(String args[])
+ {
+	 int a[]=new int[100];
+	 int b[]=new int[100];
+	 int len,k;
+	 crc ob=new crc();
+	 System.out.println("Enter the length of Data Frame:"); 
+	 Scanner sc=new Scanner(System.in); 
+	 len=sc.nextInt();
+	 int flag=0;
+	 System.out.println("Enter the Message(enter 1 bit per line):");
+	 for(int i=0;i<len;i++)
+	 {
+		 a[i]=sc.nextInt();
+	 }
+	 for(int i=0;i<16;i++)
+	 {
+		 a[len++]=0;
+	 }
+	 k=len-16;
+	 for(int i=0;i<len;i++)
+	 {
+		 b[i]=a[i];
+	 }
+	 ob.div(a,k);
+	 for(int i=0;i<len;i++)
+		 a[i]=a[i]^b[i];
+	 System.out.println("Data to be transmitted: "); 
+	 for(int i=0;i<len;i++)
+	 {
+		 System.out.print(a[i]+" ");
+	 }
+	 System.out.println();
+	 System.out.println("Enter the Reveived Data: "); 
+	 for(int i=0;i<len;i++)
+	 {
+		 a[i]=sc.nextInt();
+	 }
+	 ob.div(a, k);
+	 for(int i=0;i<len;i++)
+	 {
+		 if(a[i]!=0) 
+		 {
+			 flag=1;
+			 break; 
+		 }
+	 }
+	 if(flag==1)
+		 System.out.println("error in data"); else
+	 System.out.println("no error"); 
+	 sc.close();
+ }   
+}
